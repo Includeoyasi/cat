@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package api;
+
+option go_package = "github.com/Includeoyasi/cat/pkg/grpc";
+
+service Cat {
+  rpc GetCapsule(GetCapsuleRequest) returns (GetCapsuleResponce);
+}
+
+message Capsule{
+  // айди капсулы
+  int32 id = 1;
+
+  // автор капсулы
+  string author = 2;
+
+  // текст капсулы
+  string text = 3;
+
+  // лейбл
+  string label = 4;
+
+  // время создания
+  google.protobuf.Timestamp created_at = 5;
+}
+
+message GetCapsuleRequest{
+  int32 id = 1;
+}
+
+message GetCapsuleResponce{
+  Capsule result = 1;
+}
