@@ -2,25 +2,45 @@ package api
 
 import (
 	"context"
-	grpc "github.com/Includeoyasi/cat/pkg/cat"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"log"
 	"time"
+
+	catpb "github.com/Includeoyasi/cat/pkg/cat"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type GrpcServer struct {
-	grpc.UnimplementedCatServer
+	catpb.UnimplementedCatServer
+	capsules map[int32]*catpb.Capsule
 }
 
-func GetCapsule(ctx context.Context, in *grpc.GetCapsuleRequest) (*grpc.GetCapsuleResponce, error) {
-	log.Printf("Capsule ID: %s", in.GetId())
-	return &grpc.GetCapsuleResponce{
-		Result: &grpc.Capsule{
-			Id:        505,
-			Author:    "Dimka",
-			Text:      "Hello world",
-			Label:     "test",
-			CreatedAt: timestamppb.New(time.Now()),
+func NewGrpcServer() GrpcServer {
+	createdAt := timestamppb.New(time.Now())
+
+	return GrpcServer{
+		capsules: map[int32]*catpb.Capsule{
+			1: {
+				Id:        1,
+				Author:    "Includeoyasi",
+				Text:      "First memory capsule",
+				Label:     "demo",
+				CreatedAt: createdAt,
+			},
 		},
+	}
+}
+
+func (s GrpcServer) GetCapsule(ctx context.Context, in *catpb.GetCapsuleRequest) (*catpb.GetCapsuleResponce, error) {
+	log.Printf("Capsule ID: %d", in.GetId())
+
+	capsule, ok := s.capsules[in.GetId()]
+	if !ok {
+		return nil, status.Errorf(codes.NotFound, "capsule %d not found", in.GetId())
+	}
+
+	return &catpb.GetCapsuleResponce{
+		Result: capsule,
 	}, nil
 }
