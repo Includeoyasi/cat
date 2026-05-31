@@ -21,7 +21,7 @@ func main() {
 
 	server := grpc.NewServer()
 	reflection.Register(server)
-	proto.RegisterCatServer(server, api.GrpcServer{})
+	proto.RegisterCatServer(server, api.NewGrpcServer())
 
 	log.Printf("server listening at: %s", lst.Addr())
 
