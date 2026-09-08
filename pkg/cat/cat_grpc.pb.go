@@ -23,6 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CatClient interface {
 	GetCapsule(ctx context.Context, in *GetCapsuleRequest, opts ...grpc.CallOption) (*GetCapsuleResponce, error)
+	CreateCapsule(ctx context.Context, in *CreateCapsuleRequest, opts ...grpc.CallOption) (*CreateCapsuleResponce, error)
+	DeleteCapsule(ctx context.Context, in *DeleteCapsuleRequest, opts ...grpc.CallOption) (*DeleteCapsuleResponce, error)
 }
 
 type catClient struct {
@@ -42,11 +44,31 @@ func (c *catClient) GetCapsule(ctx context.Context, in *GetCapsuleRequest, opts 
 	return out, nil
 }
 
+func (c *catClient) CreateCapsule(ctx context.Context, in *CreateCapsuleRequest, opts ...grpc.CallOption) (*CreateCapsuleResponce, error) {
+	out := new(CreateCapsuleResponce)
+	err := c.cc.Invoke(ctx, "/api.Cat/CreateCapsule", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *catClient) DeleteCapsule(ctx context.Context, in *DeleteCapsuleRequest, opts ...grpc.CallOption) (*DeleteCapsuleResponce, error) {
+	out := new(DeleteCapsuleResponce)
+	err := c.cc.Invoke(ctx, "/api.Cat/DeleteCapsule", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CatServer is the server API for Cat service.
 // All implementations must embed UnimplementedCatServer
 // for forward compatibility
 type CatServer interface {
 	GetCapsule(context.Context, *GetCapsuleRequest) (*GetCapsuleResponce, error)
+	CreateCapsule(context.Context, *CreateCapsuleRequest) (*CreateCapsuleResponce, error)
+	DeleteCapsule(context.Context, *DeleteCapsuleRequest) (*DeleteCapsuleResponce, error)
 	mustEmbedUnimplementedCatServer()
 }
 
@@ -56,6 +78,12 @@ type UnimplementedCatServer struct {
 
 func (UnimplementedCatServer) GetCapsule(context.Context, *GetCapsuleRequest) (*GetCapsuleResponce, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCapsule not implemented")
+}
+func (UnimplementedCatServer) CreateCapsule(context.Context, *CreateCapsuleRequest) (*CreateCapsuleResponce, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateCapsule not implemented")
+}
+func (UnimplementedCatServer) DeleteCapsule(context.Context, *DeleteCapsuleRequest) (*DeleteCapsuleResponce, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteCapsule not implemented")
 }
 func (UnimplementedCatServer) mustEmbedUnimplementedCatServer() {}
 
@@ -88,6 +116,42 @@ func _Cat_GetCapsule_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Cat_CreateCapsule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCapsuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatServer).CreateCapsule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.Cat/CreateCapsule",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatServer).CreateCapsule(ctx, req.(*CreateCapsuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Cat_DeleteCapsule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCapsuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatServer).DeleteCapsule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.Cat/DeleteCapsule",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatServer).DeleteCapsule(ctx, req.(*DeleteCapsuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Cat_ServiceDesc is the grpc.ServiceDesc for Cat service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +162,14 @@ var Cat_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCapsule",
 			Handler:    _Cat_GetCapsule_Handler,
+		},
+		{
+			MethodName: "CreateCapsule",
+			Handler:    _Cat_CreateCapsule_Handler,
+		},
+		{
+			MethodName: "DeleteCapsule",
+			Handler:    _Cat_DeleteCapsule_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

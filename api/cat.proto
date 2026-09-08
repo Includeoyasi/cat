@@ -8,6 +8,8 @@ option go_package = "github.com/Includeoyasi/cat/pkg/grpc";
 
 service Cat {
   rpc GetCapsule(GetCapsuleRequest) returns (GetCapsuleResponce);
+  rpc CreateCapsule(CreateCapsuleRequest) returns (CreateCapsuleResponce);
+  rpc DeleteCapsule(DeleteCapsuleRequest) returns (DeleteCapsuleResponce);
 }
 
 message Capsule{
@@ -33,4 +35,22 @@ message GetCapsuleRequest{
 
 message GetCapsuleResponce{
   Capsule result = 1;
+}
+
+message CreateCapsuleRequest{
+  string author = 1;
+  string text = 2;
+  string label = 3;
+}
+
+message CreateCapsuleResponce{
+  Capsule result = 1;
+}
+
+message DeleteCapsuleRequest{
+  int32 id = 1;
+}
+
+message DeleteCapsuleResponce{
+  bool deleted = 1;
 }
