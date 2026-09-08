@@ -1,8 +1,8 @@
 # cat
 
-cat is a small gRPC service for reading memory capsules.
+cat is a small gRPC service for managing memory capsules.
 
-It exposes a `Cat` gRPC service with a `GetCapsule` method and returns capsule data by ID. The current implementation uses a small in-memory store, which keeps the service simple while the API contract is being shaped.
+It exposes a `Cat` gRPC service with methods for creating, reading, and deleting capsules. The current implementation uses an in-memory store, which keeps the service simple while the API contract is being shaped.
 
 ## Run
 
@@ -17,6 +17,8 @@ The gRPC server listens on port `50051`.
 ```proto
 service Cat {
   rpc GetCapsule(GetCapsuleRequest) returns (GetCapsuleResponce);
+  rpc CreateCapsule(CreateCapsuleRequest) returns (CreateCapsuleResponce);
+  rpc DeleteCapsule(DeleteCapsuleRequest) returns (DeleteCapsuleResponce);
 }
 ```
 
